@@ -6,56 +6,81 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
+    @State private var counter: Int = 0
+    
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
+        VStack(spacing: 20) {
+            Text("\(counter)")
+                .font(.largeTitle)
+                .padding()
+                .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/)
+            
+            HStack(spacing: 20) {
+                Button(action: {
+                    incrementCounter(by: 1)
+                }) {
+                    Text("+1")
+                        .font(.title)
+                        .padding()
+                        .frame(width: 79)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
                 }
-                .onDelete(perform: deleteItems)
+                
+                Button(action: {
+                    incrementCounter(by: 5)
+                }) {
+                    Text("+5")
+                        .font(.title)
+                        .padding()
+                        .frame(width: 79)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                
+                Button(action: {
+                    incrementCounter(by: 10)
+                }) {
+                    Text("+10")
+                        .font(.title)
+                        .padding()
+                        .frame(width: 79)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
+            
+            Button(action: {
+                reset()
+            }) {
+                Text("reset")
+                    .font(.title)
+                    .padding()
+                    .background(Color.red)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
             }
-        } detail: {
-            Text("Select an item")
         }
+        .padding()
     }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
+    
+    private func incrementCounter(by value: Int) {
+        counter += value
     }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
-        }
+    
+    private func reset() {
+        counter = 0;
     }
 }
 
-#Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
 }
